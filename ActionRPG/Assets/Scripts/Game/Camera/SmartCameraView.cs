@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Extensions;
 
-public class GameManager : MonoBehaviour 
+public class SmartCameraView : MonobehaviourExtension 
 {
 	
 }

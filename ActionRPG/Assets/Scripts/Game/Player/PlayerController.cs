@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Extensions;
+using Managers;
 
 namespace Player
 {
     [RequireComponent(typeof(Animator))]
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerController : MyMonoBehaviour
+    public class PlayerController : MonobehaviourExtension
     {
         [Header("Stats")]
         [SerializeField] private float sprintMultiplier = 3.0f;
@@ -75,9 +77,9 @@ namespace Player
 
         private void HandleInput()
         {
-            float horizontal = InputManager.input.move.x.value;
-            float vertical = InputManager.input.move.y.value;
-            jump = InputManager.input.jump.wasPressed;
+            float horizontal = InputManager.Move.x.value;
+            float vertical = InputManager.Move.y.value;
+            jump = InputManager.Jump.wasPressed;
             move = Vector3.zero;
 
             // calculate move direction to pass to character

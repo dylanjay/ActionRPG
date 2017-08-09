@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Extensions;
 
-public class SmartCameraController : MonoBehaviour 
+public class SmartCameraController : MonobehaviourExtension 
 {
 	void Start () 
 	{

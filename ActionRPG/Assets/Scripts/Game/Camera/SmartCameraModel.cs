@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Extensions;
 
-public class PlayerModel : MonoBehaviour 
+public class SmartCameraModel : MonobehaviourExtension 
 {
 	void Start () 
 	{
