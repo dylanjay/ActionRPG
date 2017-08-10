@@ -7,7 +7,7 @@ using Player;
 
 namespace Managers
 {
-    public class GameManager : Singleton<MonobehaviourExtension>
+    public class GameManager : Singleton<MonoBehaviourWrapper>
     {
         public static PlayerController Player = FindObjectOfType<PlayerController>();
 

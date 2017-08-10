@@ -1,14 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Framework;
 
 namespace Extensions
 {
     public static class GetComponentExtension
     {
-        public static T GetRequiredComponent<T>(this GameObject obj) where T : MonobehaviourExtension
+        public static T GetRequiredComponent<T>(this GameObject obj) where T : MonoBehaviour
         {
-            T component = obj.GetComponent<T>();
+            T component = obj.GetComponent<T>();    
 
             if (component == null)
             {

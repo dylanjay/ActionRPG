@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Extensions;
+using Framework;
 
 namespace Player
 {
-    public class PlayerModel : MonobehaviourExtension
+    public class PlayerModel : MonoBehaviourWrapper
     {
     }
 }

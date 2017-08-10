@@ -3148,12 +3148,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcbdddf32bc603d45ade1311171fc6e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 6
+  jumpForce: 6
   sprintMultiplier: 2
-  jumpPower: 6
   moveSpeedMultiplier: 1
-  inAirAccelerationMultiplier: 1
+  inAirSpeedMultiplier: 0.5
   animSpeedMultiplier: 1
   gravityMultiplier: 2
+  disableMove: 0
 --- !u!137 &137027713301300126
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -5939,7 +5941,7 @@ CharacterController:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Height: 1.77
+  m_Height: 1.8
   m_Radius: 0.25
   m_SlopeLimit: 45
   m_StepOffset: 0.3

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Extensions;
+using Framework;
 
-public class SmartCameraView : MonobehaviourExtension 
+public class SmartCameraView : MonoBehaviourWrapper 
 {
 	
 }

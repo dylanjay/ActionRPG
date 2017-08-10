@@ -6,7 +6,7 @@ using Framework;
 
 namespace Managers
 {
-    public class InputManager : Singleton<MonobehaviourExtension>
+    public class InputManager : Singleton<MonoBehaviourWrapper>
     {
         public class Button
         {
@@ -74,10 +74,10 @@ namespace Managers
             }
         }
 
-        public static Axis2D Move = new Axis2D("Horizontal", "Vertical");
-        public static Button Jump = new Button("Jump");
-        public static Button Attack = new Button("Fire1");
-        public static Button Sprint = new Button("Sprint");
+        public static Axis2D move = new Axis2D("Horizontal", "Vertical");
+        public static Button jump = new Button("Jump");
+        public static Button attack = new Button("Fire1");
+        public static Button sprint = new Button("Sprint");
 
         private void Awake()
         {

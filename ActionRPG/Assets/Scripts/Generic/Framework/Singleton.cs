@@ -3,7 +3,7 @@ using Extensions;
 
 namespace Framework
 {
-    public abstract class Singleton<T> : MonobehaviourExtension where T : MonobehaviourExtension
+    public abstract class Singleton<T> : MonoBehaviourWrapper where T : MonoBehaviourWrapper
     {
         private static T _instance = null;
         private static GameObject _gameObject = null;
