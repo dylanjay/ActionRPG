@@ -1,17 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Framework;
+﻿using Framework;
+using Benco.Camera;
+using Cinemachine;
 
-public class SmartCameraController : MonoBehaviourWrapper 
+/// <summary>
+/// The Controller for the CameraHint system, as well as other various camera effects.
+/// </summary>
+public class SmartCameraController : MonoBehaviourWrapper
 {
-	void Start () 
-	{
-		
-	}
-	
-	void Update () 
-	{
-		
-	}
+    CameraPriorityGroup cameraPriorityGroup = new CameraPriorityGroup();
+
+    void Start()
+    {
+        cameraPriorityGroup.SetCameraHints(new CameraHint[] { new WormsEye(enabled:true) });
+    }
+
+    void Update()
+    {
+        CameraHint cameraHint = cameraPriorityGroup.GetCameraHint(transform, GetComponent<CinemachineVirtualCamera>());
+        cameraHint.OperateCamera(transform, GetComponent<CinemachineVirtualCamera>(), PriorityGroup.All);
+    }
 }
