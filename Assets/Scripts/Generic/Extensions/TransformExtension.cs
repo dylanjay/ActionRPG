@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Extensions
+namespace BenCo.Extensions
 {
     public static class TransformExtension
     {

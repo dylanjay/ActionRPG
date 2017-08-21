@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Managers;
+using BenCo.Managers;
 
-namespace Framework
+namespace BenCo.Framework
 {
     public class MonoBehaviourWrapper : MonoBehaviour
     {

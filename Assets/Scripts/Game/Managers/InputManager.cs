@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Extensions;
-using Framework;
+using BenCo.Extensions;
+using BenCo.Framework;
 
-namespace Managers
+namespace BenCo.Managers
 {
     public class InputManager : Singleton<MonoBehaviourWrapper>
     {
@@ -76,8 +76,13 @@ namespace Managers
 
         public static Axis2D move = new Axis2D("Horizontal", "Vertical");
         public static Button jump = new Button("Jump");
-        public static Button attack = new Button("Fire1");
-        public static Button sprint = new Button("Sprint");
+        public static Button leftAttack = new Button("LeftAttack");
+        public static Button rightAttack = new Button("RightAttack");
+        public static Button attackModifier = new Button("AttackModifier");
+        public static Button stagger = new Button("Stagger");
+        public static Button lockOn = new Button("LockOn");
+        public static Button dash = new Button("Dash");
+        public static Button die = new Button("Die");
 
         private void Awake()
         {

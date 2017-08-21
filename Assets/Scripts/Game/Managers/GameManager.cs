@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Extensions;
-using Framework;
-using Player;
+using BenCo.Extensions;
+using BenCo.Framework;
+using BenCo.Player;
 
-namespace Managers
+namespace BenCo.Managers
 {
     public class GameManager : Singleton<MonoBehaviourWrapper>
     {

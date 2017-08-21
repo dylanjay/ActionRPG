@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Managers
+namespace BenCo.Managers
 {
     public class MonoBehaviourManager : MonoBehaviour
     {
@@ -16,6 +16,8 @@ namespace Managers
         private event UpdateDelegate fixedUpdateEvent;
         private event UpdateDelegate lateUpdateEvent;
 
+        public float deltaTime;
+
         private void Awake()
         {
             Instance = this;
@@ -23,6 +25,9 @@ namespace Managers
 
         private void Update()
         {
+            // Set cached delta time variable for all monobehaviours to use
+            deltaTime = Time.deltaTime;
+
             if (updateEvent != null)
             {
                 updateEvent.Invoke();

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Framework;
+using BenCo.Framework;
 
-namespace Extensions
+namespace BenCo.Extensions
 {
     public static class GetComponentExtension
     {

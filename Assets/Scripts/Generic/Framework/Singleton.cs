@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using Extensions;
+using BenCo.Extensions;
 
-namespace Framework
+namespace BenCo.Framework
 {
     public abstract class Singleton<T> : MonoBehaviourWrapper where T : MonoBehaviourWrapper
     {
