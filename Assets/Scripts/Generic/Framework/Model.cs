@@ -1,6 +1,8 @@
 ﻿/// <summary>
 /// Model base class used for the MVC framework
 /// </summary>
+using System.Collections;
+using System.Collections.Generic;
 
 namespace BenCo.Framework
 {
@@ -9,46 +11,36 @@ namespace BenCo.Framework
 		public class Trigger
         {
             private bool trigger = false;
+            private bool _value;
             public bool isTriggered
             {
                 get
                 {
-                    if (trigger)
-                    {
-                        trigger = false;
-                        return true;
-                    }
-                    return false;
+                    return trigger;
                 }
             }
 
-            public void Set()
-            {
-                trigger = true;
-            }
-        }
-
-        public class DirtyTrigger
-        {
-            private bool trigger = false;
-            public bool value;
-            public bool isTriggered
+            public bool value
             {
                 get
                 {
-                    if (trigger)
-                    {
-                        trigger = false;
-                        return true;
-                    }
-                    return false;
+                    return _value;
                 }
             }
 
-            public void Set(bool value)
+            public IEnumerator Set()
             {
-                this.value = value;
                 trigger = true;
+                yield return null;
+                trigger = false;
+            }
+
+            public IEnumerator Set(bool value)
+            {
+                trigger = true;
+                _value = value;
+                yield return null;
+                trigger = false;
             }
         }
 	}

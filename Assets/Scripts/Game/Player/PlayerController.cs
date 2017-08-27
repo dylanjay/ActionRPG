@@ -26,6 +26,11 @@ namespace BenCo.Player
         // Disable Input
         private bool disableInput = false;
 
+        // Movement Variables
+        private Vector2 lastMoveInput = Vector3.zero;
+        private bool newMoveInput = false;
+        private Vector3 lastMoveVector = Vector3.zero;
+
         // Jumping Variables
         private bool jump = false;
 
@@ -137,6 +142,7 @@ namespace BenCo.Player
             else
             {
                 RotateTowardsMovementDir();
+                newMoveInput = false;
             }
         }
 
@@ -162,7 +168,7 @@ namespace BenCo.Player
                 if (InputManager.lockOn.wasPressed)
                 {
                     model.lockOn = !model.lockOn;
-                    model.lockOnTrigger.Set();
+                    StartCoroutine(model.lockOnTrigger.Set());
                 }
             }
             else
@@ -178,12 +184,22 @@ namespace BenCo.Player
             float vertical = InputManager.move.y.value;
             model.moveVector = Vector3.zero;
 
+            // check if we are getting a new input direction
+            Vector2 input = new Vector2(horizontal, vertical);
+            if (input != Vector2.zero && input != lastMoveInput)
+            {
+                newMoveInput = true;
+            }
+            lastMoveInput = input;
+
+            //model.moveVector = newMoveInput || input == Vector3.zero ? Vector3.zero : lastMoveVector;
+
             // calculate move direction to pass to character
             if (mainCamera != null)
             {
-                // calculate camera relative direction to move:
                 Vector3 camForward = Vector3.Scale(mainCamera.forward, new Vector3(1, 0, 1)).normalized;
-                model.moveVector = vertical * camForward + horizontal * mainCamera.right;
+                //model.moveVector = vertical * camForward + horizontal * mainCamera.right;
+                model.moveVector = NormalizeMoveInput(vertical) * camForward + NormalizeMoveInput(horizontal) * mainCamera.right;
             }
             else
             {
@@ -222,11 +238,6 @@ namespace BenCo.Player
                     attackIndex = Attack.RightPunch;
                 }
             }
-
-            //leftPunch = InputManager.leftPunch.wasPressed;
-            //rightPunch = InputManager.punchRight.wasPressed;
-            //leftKick = InputManager.kickLeft.wasPressed;
-            //rightKick = InputManager.kickRight.wasPressed;
         }
 
         #endregion
@@ -257,7 +268,7 @@ namespace BenCo.Player
             if (!model.grounded && controller.isGrounded && model.canAction)
             {
                 model.ChangeState(State.Grounded);
-                model.landTrigger.Set();
+                StartCoroutine(model.landTrigger.Set());
             }
             model.grounded = controller.isGrounded;
         }
@@ -268,6 +279,19 @@ namespace BenCo.Player
             disableInput = true;
             yield return new WaitForSeconds(endLock);
             disableInput = false;
+        }
+
+        private int NormalizeMoveInput(float value)
+        {
+            if (value < 0)
+            {
+                return -1;
+            }
+            if (value > 0)
+            {
+                return 1;
+            }
+            return 0;
         }
 
         #endregion
@@ -306,7 +330,7 @@ namespace BenCo.Player
         private void RotateTowardsMovementDir()
         {
             // rotate model toward its movement vector
-            Vector3 moveVector2D = Vector3.Scale(model.moveVector, new Vector3(1, 0, 1));
+            Vector3 moveVector2D = model.moveVector.xz();
             if (moveVector2D != Vector3.zero && !model.lockOn && !model.isRolling)
             {
                 transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(moveVector2D), model.turnSpeed * deltaTime);
@@ -319,18 +343,18 @@ namespace BenCo.Player
             Vector3 extraGravityForce = ((Physics.gravity * model.gravityMultiplier) - Physics.gravity) * deltaTime;
             extraGravityForce.y += controller.velocity.y;
             model.moveVector *= model.airbornSpeed;
-            model.moveVector += extraGravityForce;
+            model.moveVector += extraGravityForce * (model.isFalling ? model.fallingGravityMultiplier : 1f);
 
             // check if falling
-            if (model.currentState != State.Grounded && model.currentState != State.Falling && controller.velocity.y < model.fallingVelocity)
+            if (model.currentState != State.Grounded && model.currentState != State.Falling && controller.velocity.y <= model.fallingVelocity)
             {
                 model.ChangeState(State.Falling);
-                model.fallTrigger.Set();
+                StartCoroutine(model.fallTrigger.Set());
             }
 
             // clamp X / Z to limit velocity we can achieve
-            model.moveVector = new Vector3(Mathf.Clamp(model.moveVector.x, model.minAirVelocity, model.maxAirVelocity), model.moveVector.y,
-                                              Mathf.Clamp(model.moveVector.z, model.minAirVelocity, model.maxAirVelocity));
+            //model.moveVector = new Vector3(Mathf.Clamp(model.moveVector.x, model.minAirVelocity, model.maxAirVelocity), model.moveVector.y,
+            //                                  Mathf.Clamp(model.moveVector.z, model.minAirVelocity, model.maxAirVelocity));
 
         }
 
@@ -357,25 +381,25 @@ namespace BenCo.Player
         private void Jump()
         {
             model.ChangeState(State.Jumping);
-            model.jumpTrigger.Set();
+            StartCoroutine(model.jumpTrigger.Set());
             model.moveVector.y = model.jumpForce;
         }
 
         public IEnumerator AttackMove()
         {
             model.ChangeState(State.Attacking);
-            model.attackTrigger.Set();
-            model.rootMotionTrigger.Set(true);
+            StartCoroutine(model.attackTrigger.Set());
+            StartCoroutine(model.rootMotionTrigger.Set(true));
             model.attackIndex = attackIndex;
             yield return StartCoroutine(LockPlayerInputForSeconds(0, .8f));
             model.ChangeState(model.lastState);
-            model.rootMotionTrigger.Set(false);
+            StartCoroutine(model.rootMotionTrigger.Set(false));
         }
 
         public IEnumerator Stagger()
         {
             model.ChangeState(State.Staggering);
-            model.staggerTrigger.Set();
+            StartCoroutine(model.staggerTrigger.Set());
 
             int hits = 5;
             int hitNumber = Random.Range(0, hits);
@@ -425,22 +449,22 @@ namespace BenCo.Player
         private IEnumerator Die()
         {
             model.ChangeState(State.Dead);
-            model.dieTrigger.Set();
+            StartCoroutine(model.dieTrigger.Set());
             yield return StartCoroutine(LockPlayerInputForSeconds(0f, 1.5f));
         }
 
         private IEnumerator Revive()
         {
             model.ChangeState(model.lastState);
-            model.reviveTrigger.Set();
+            StartCoroutine(model.reviveTrigger.Set());
             yield return StartCoroutine(LockPlayerInputForSeconds(0f, 0.5f));
         }
 
         private IEnumerator Roll()
         {
             model.ChangeState(State.Dashing);
-            model.rollTrigger.Set();
-            model.rootMotionTrigger.Set(true);
+            StartCoroutine(model.rollTrigger.Set());
+            StartCoroutine(model.rootMotionTrigger.Set(true));
             if (model.lockOn && model.targetDashDirection != Vector3.zero)
             {
                 //check which way the dash is pressed relative to the character facing
@@ -474,7 +498,7 @@ namespace BenCo.Player
             }
             yield return StartCoroutine(LockPlayerInputForSeconds(0f, model.rollDuration));
             model.ChangeState(model.lastState);
-            model.rootMotionTrigger.Set(false);
+            StartCoroutine(model.rootMotionTrigger.Set(false));
         }
 
         #endregion

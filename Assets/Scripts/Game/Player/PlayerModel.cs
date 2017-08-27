@@ -35,8 +35,8 @@ namespace BenCo.Player
 
         // Tweakables
         [Header("Stats")]
-        public float moveSpeed = 6f;
-        public float airbornSpeed = 8f;
+        public float moveSpeed = 8f;
+        public float airbornSpeed = 6f;
         public float turnSpeed = 40f;
         public float rollSpeed = 8f;
         public float rollDuration = 0.5f;
@@ -47,6 +47,7 @@ namespace BenCo.Player
         public float walkSpeedMultiplier = 0.2f;
         public float knockbackMultiplier = 1f;
         public float animSpeedMultiplier = 1f;
+        public float fallingGravityMultiplier = 1.05f;
         [Range(1f, 4f)] public float gravityMultiplier = 2f;
 
         // Read Only State Variables
@@ -63,7 +64,7 @@ namespace BenCo.Player
         public bool isDead { get { return currentState == State.Dead; } }
 
         // State Triggers
-        public DirtyTrigger rootMotionTrigger = new DirtyTrigger();
+        public Trigger rootMotionTrigger = new Trigger();
         public Trigger lockOnTrigger = new Trigger();
         public Trigger dieTrigger = new Trigger();
         public Trigger reviveTrigger = new Trigger();
@@ -92,7 +93,7 @@ namespace BenCo.Player
         // Jumping Variables
         public int jumpsUsed = 0;
         public int maxJumps = 2;
-        public float fallingVelocity = -1f;
+        public float fallingVelocity = 0;
 
         // In Air Variable
         public float maxAirVelocity = 2f;

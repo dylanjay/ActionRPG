@@ -1650,19 +1650,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentState: 1
   lastState: 1
-  moveSpeed: 6
-  airbornSpeed: 8
-  turnSpeed: 40
+  moveSpeed: 8
+  airbornSpeed: 6
+  turnSpeed: 10
   rollSpeed: 8
   rollDuration: 0.5
-  jumpForce: 12
+  jumpForce: 20
   doubleJumpForce: 12
   sprintMultiplier: 2
   moveSpeedMultiplier: 1
   walkSpeedMultiplier: 0.2
   knockbackMultiplier: 1
   animSpeedMultiplier: 1
-  gravityMultiplier: 2
+  fallingGravityMultiplier: 1.05
+  gravityMultiplier: 4
   lockOn: 0
   grounded: 0
   dashDirection: 0
@@ -1673,7 +1674,7 @@ MonoBehaviour:
   targetDashDirection: {x: 0, y: 0, z: 0}
   jumpsUsed: 0
   maxJumps: 2
-  fallingVelocity: -1
+  fallingVelocity: 0
   maxAirVelocity: 2
   minAirVelocity: -2
 --- !u!114 &114678672355806782
@@ -1698,7 +1699,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcbdddf32bc603d45ade1311171fc6e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lockOnTarget: {fileID: 0}
 --- !u!137 &137224067420496234
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
