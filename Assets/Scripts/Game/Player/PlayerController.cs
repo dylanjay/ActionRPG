@@ -13,6 +13,12 @@ namespace BenCo.Player
     {
         #region Variables
 
+        [Header("Refs")]
+        public GameObject spike;
+
+        // AttackSpike
+        private Renderer spikeRenderer;
+
         // Model for MVC
         private PlayerModel model;
 
@@ -44,7 +50,8 @@ namespace BenCo.Player
 
         // Attack Variables
         private bool attack = false;
-        private Attack attackIndex;
+        private Attack attackIndex = Attack.LeftPunch;
+        private Timer comboResetTimer;
 
         // Lock On Variables
         private GameObject lockOnTarget;
@@ -77,6 +84,8 @@ namespace BenCo.Player
 
             // TEMP
             lockOnTarget = GameObject.Find("TestEnemy");
+            spikeRenderer = spike.GetComponent<Renderer>();
+            comboResetTimer = MonoBehaviourManager.Instance.AddTimer(model.comboResetTime);
         }
 
         #endregion
@@ -215,29 +224,41 @@ namespace BenCo.Player
 
         private void HandleAttackingInput()
         {
-            attack = InputManager.leftAttack.wasPressed || InputManager.rightAttack.wasPressed;
-            if (InputManager.attackModifier.isPressed)
+            // Temporary Combo
+            attack = InputManager.attack.wasPressed;
+            if (attack && model.isAttacking)
             {
-                if (InputManager.leftAttack.wasPressed)
-                {
-                    attackIndex = Attack.LeftKick;
-                }
-                else if (InputManager.rightAttack.wasPressed)
-                {
-                    attackIndex = Attack.RightKick;
-                }
+                attack = false;
             }
-            else
+
+            if (comboResetTimer.isTriggered)
             {
-                if (InputManager.leftAttack.wasPressed)
-                {
-                    attackIndex = Attack.LeftPunch;
-                }
-                else if (InputManager.rightAttack.wasPressed)
-                {
-                    attackIndex = Attack.RightPunch;
-                }
+                attackIndex = Attack.LeftPunch;
             }
+
+            //attack = InputManager.attack.wasPressed || InputManager.rightAttack.wasPressed;
+            //if (InputManager.attackModifier.isPressed)
+            //{
+            //    if (InputManager.attack.wasPressed)
+            //    {
+            //        attackIndex = Attack.LeftKick;
+            //    }
+            //    else if (InputManager.rightAttack.wasPressed)
+            //    {
+            //        attackIndex = Attack.RightKick;
+            //    }
+            //}
+            //else
+            //{
+            //    if (InputManager.attack.wasPressed)
+            //    {
+            //        attackIndex = Attack.LeftPunch;
+            //    }
+            //    else if (InputManager.rightAttack.wasPressed)
+            //    {
+            //        attackIndex = Attack.RightPunch;
+            //    }
+            //}
         }
 
         #endregion
@@ -391,9 +412,39 @@ namespace BenCo.Player
             StartCoroutine(model.attackTrigger.Set());
             StartCoroutine(model.rootMotionTrigger.Set(true));
             model.attackIndex = attackIndex;
-            yield return StartCoroutine(LockPlayerInputForSeconds(0, .8f));
+            Vector3 centerPlayerPos = transform.position;
+            switch (attackIndex)
+            {
+                case Attack.LeftPunch:
+                    StartCoroutine(ThrustSpike(centerPlayerPos + 2f * transform.forward + -transform.right / 2f, 
+                                   centerPlayerPos + 3.5f * transform.forward + (Vector3.up * controller.height / 2)
+                                   + transform.right / 2f, 0.5f, 0.2f, 0.1f));
+                    yield return StartCoroutine(LockPlayerInputForSeconds(0, .5f));
+                    break;
+                case Attack.RightPunch:
+                    StartCoroutine(ThrustSpike(centerPlayerPos + 2f * transform.forward + transform.right / 2f,
+                                   centerPlayerPos + 3.5f * transform.forward + (Vector3.up * controller.height / 2)
+                                   + -transform.right / 2f, 0.5f, 0.2f, 0.1f));
+                    yield return StartCoroutine(LockPlayerInputForSeconds(0, .5f));
+                    break;
+                case Attack.LeftKick:
+                    StartCoroutine(ThrustSpike(centerPlayerPos + 2f * transform.forward, centerPlayerPos + 3.5f * transform.forward + 
+                                  (Vector3.up * controller.height / 2), 0.7f, 0.3f, 0.1f));
+                    yield return StartCoroutine(LockPlayerInputForSeconds(0, .7f));
+                    break;
+            }
             model.ChangeState(model.lastState);
             StartCoroutine(model.rootMotionTrigger.Set(false));
+            comboResetTimer.active = true;
+            if (attackIndex == Attack.LeftKick)
+            {
+                attackIndex = Attack.LeftPunch;
+            }
+            else
+            {
+                attackIndex++;
+            }
+            comboResetTimer.Reset();
         }
 
         public IEnumerator Stagger()
@@ -458,6 +509,39 @@ namespace BenCo.Player
             model.ChangeState(model.lastState);
             StartCoroutine(model.reviveTrigger.Set());
             yield return StartCoroutine(LockPlayerInputForSeconds(0f, 0.5f));
+        }
+
+        private IEnumerator ThrustSpike(Vector3 startPos, Vector3 endPos, float totalTime, float delayTime, float recedeTime)
+        {
+            
+            spike.transform.position = startPos;
+            spike.transform.up = Vector3.Normalize(endPos - startPos);
+            float elapsedTime = 0f;
+            float startRecede = totalTime - recedeTime;
+            float activeTime = 0f;
+            while (elapsedTime < startRecede)
+            {
+                if (elapsedTime >= delayTime)
+                {
+                    if (!spike.activeInHierarchy)
+                    {
+                        spike.SetActive(true);
+                    }
+                    spike.transform.position = Vector3.Lerp(startPos, endPos, activeTime / (startRecede - delayTime));
+                    //spikeRenderer.material.SetFloat("_Cutoff", Mathf.Lerp(0.875f, 0.5f, elapsedTime / time));
+                    activeTime += deltaTime;
+                }
+                elapsedTime += deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+
+            while (elapsedTime < totalTime)
+            {
+                spike.transform.position = Vector3.Lerp(endPos, startPos, (elapsedTime - startRecede) / recedeTime);
+                elapsedTime += deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+            spike.SetActive(false);
         }
 
         private IEnumerator Roll()

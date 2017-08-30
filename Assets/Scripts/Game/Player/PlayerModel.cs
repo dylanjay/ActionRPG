@@ -49,6 +49,7 @@ namespace BenCo.Player
         public float animSpeedMultiplier = 1f;
         public float fallingGravityMultiplier = 1.05f;
         [Range(1f, 4f)] public float gravityMultiplier = 2f;
+        public float comboResetTime = 3f;
 
         // Read Only State Variables
         public bool canMove { get { return currentState < State.LockInput; } }

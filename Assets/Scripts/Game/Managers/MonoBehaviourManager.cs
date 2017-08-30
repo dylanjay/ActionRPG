@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using BenCo.Framework;
 
 namespace BenCo.Managers
 {
@@ -15,6 +16,8 @@ namespace BenCo.Managers
         private event UpdateDelegate updateEvent;
         private event UpdateDelegate fixedUpdateEvent;
         private event UpdateDelegate lateUpdateEvent;
+
+        private List<Timer> timers = new List<Timer>();
 
         public float deltaTime;
 
@@ -31,6 +34,14 @@ namespace BenCo.Managers
             if (updateEvent != null)
             {
                 updateEvent.Invoke();
+            }
+
+            for (int i = 0; i < timers.Count; i++)
+            {
+                if (timers[i].active)
+                {
+                    timers[i].elapsedTime += deltaTime;
+                }
             }
         }
 
@@ -96,6 +107,13 @@ namespace BenCo.Managers
                     lateUpdateEvent = subscribe ? lateUpdateEvent + myUpdate : lateUpdateEvent - myUpdate;
                     break;
             }
+        }
+
+        public Timer AddTimer(float setTime, bool restartTimerAfterCheck = false)
+        {
+            Timer timer = new Timer(timers.Count - 1, setTime, restartTimerAfterCheck);
+            timers.Add(timer);
+            return timer;
         }
     }
 }

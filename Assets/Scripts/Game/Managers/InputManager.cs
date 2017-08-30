@@ -76,9 +76,10 @@ namespace BenCo.Managers
 
         public static Axis2D move = new Axis2D("Horizontal", "Vertical");
         public static Button jump = new Button("Jump");
-        public static Button leftAttack = new Button("LeftAttack");
-        public static Button rightAttack = new Button("RightAttack");
-        public static Button attackModifier = new Button("AttackModifier");
+        public static Button attack = new Button("Attack");
+        //public static Button leftAttack = new Button("LeftAttack");
+        //public static Button rightAttack = new Button("RightAttack");
+        //public static Button attackModifier = new Button("AttackModifier");
         public static Button stagger = new Button("Stagger");
         public static Button lockOn = new Button("LockOn");
         public static Button dash = new Button("Dash");

@@ -1653,7 +1653,7 @@ MonoBehaviour:
   moveSpeed: 8
   airbornSpeed: 6
   turnSpeed: 10
-  rollSpeed: 8
+  rollSpeed: 10
   rollDuration: 0.5
   jumpForce: 20
   doubleJumpForce: 12
@@ -1664,6 +1664,7 @@ MonoBehaviour:
   animSpeedMultiplier: 1
   fallingGravityMultiplier: 1.05
   gravityMultiplier: 4
+  comboResetTime: 0.3
   lockOn: 0
   grounded: 0
   dashDirection: 0
@@ -1699,6 +1700,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcbdddf32bc603d45ade1311171fc6e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spike: {fileID: 0}
 --- !u!137 &137224067420496234
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
